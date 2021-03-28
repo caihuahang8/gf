@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<meta charset=utf-8" />
+<head>
+    <title>老师作业记录</title>
+    #parse("sys/header.html")
+</head>
+<body>
+<div id="rrapp" v-cloak>
+    <div v-show="showList">
+        <div class="grid-btn">
+            <div class="form-group col-sm-2">
+                <select class="form-control" v-model="q.zuoye">
+                    <option value="">-全部作业大类-</option>
+                    <option v-for="l in zuoyes" :value="l.id">{{l.name}}</option>
+                </select>
+            </div>
+            <a class="btn btn-default" @click="query">查询</a>
+            <a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;批改</a>
+            <a class="btn btn-primary" @click="info"><i class="fa fa-info"></i>&nbsp;详情</a>
+            <a class="btn btn-primary" @click="exports"><i class="fa fa-info"></i>&nbsp;导出</a>
+        </div>
+        <table id="jqGrid"></table>
+        <div id="jqGridPager"></div>
+    </div>
+
+    <div v-show="!showList" class="panel panel-success">
+        <div class="panel-heading">{{title}}</div>
+        <form class="form-horizontal">
+            <div class="form-group">
+                <div class="col-sm-2 control-label">作业</div>
+                <div class="col-sm-10">
+                    <select class="form-control" disabled v-model="record.zuoye">
+                        <option v-for="l in zuoyes" :value="l.id">{{l.name}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">学生</div>
+                <div class="col-sm-10">
+                    <select class="form-control" disabled v-model="record.user">
+                        <option v-for="l in users" :value="l.userId">{{l.username}}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-2 control-label">作业</div>
+                <div class="col-sm-10">
+                    <textarea class="form-control" disabled v-model="record.content" placeholder="作业"
+                              cols="30" rows="20"></textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-2 control-label">附件</div>
+                <div class="col-sm-10">
+                    <a v-if="record.url" style="margin-left: 20px;" :href="record.url">下载资料</a>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">分数</div>
+                <div class="col-sm-10">
+                    <input type="number" class="form-control" :disabled="showInfo" v-model="record.score"
+                           placeholder="分数"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">评价</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" :disabled="showInfo" v-model="record.comment"
+                           placeholder="评价"/>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <div class="col-sm-2 control-label"></div>
+                <input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定" v-if="!showInfo"/>
+                &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="${rc.contextPath}/js/admin/record.js?_${date.systemTime}"></script>
+</body>
+</html>

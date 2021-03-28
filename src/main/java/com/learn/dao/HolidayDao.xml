@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.learn.dao.HolidayDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.learn.entity.HolidayEntity" id="holidayMap">
+        <result property="id" column="id"/>
+        <result property="day" column="day"/>
+        <result property="user" column="user"/>
+        <result property="content" column="content"/>
+        <result property="state" column="state"/>
+        <result property="remark" column="remark"/>
+        <result property="gmttime" column="gmtTime"/>
+    </resultMap>
+
+	<select id="queryObject" resultType="com.learn.entity.HolidayEntity">
+		select * from holiday where id = #{value}
+	</select>
+
+	<select id="queryList" resultType="com.learn.entity.HolidayEntity">
+		select * from holiday where 1=1
+		<if test="day != null and day != ''">
+			and day like '%${day}%'
+		</if>
+
+															                <if test="user != null and user != ''">
+                    and user = #{user}
+                </if>
+																									
+
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from holiday  where 1=1
+        <if test="day != null and day != ''">
+            and day like '%${day}%'
+        </if>
+															                <if test="user != null and user != ''">
+                    and user = #{user}
+                </if>
+																										</select>
+	 
+	<insert id="save" parameterType="com.learn.entity.HolidayEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into holiday
+		(
+			`day`, 
+			`user`, 
+			`content`, 
+			`state`, 
+			`remark`, 
+			`gmtTime`
+		)
+		values
+		(
+			#{day}, 
+			#{user}, 
+			#{content}, 
+			#{state}, 
+			#{remark}, 
+			#{gmttime}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.learn.entity.HolidayEntity">
+		update holiday 
+		<set>
+			<if test="day != null">`day` = #{day}, </if>
+			<if test="user != null">`user` = #{user}, </if>
+			<if test="content != null">`content` = #{content}, </if>
+			<if test="state != null">`state` = #{state}, </if>
+			<if test="remark != null">`remark` = #{remark}, </if>
+			<if test="gmttime != null">`gmtTime` = #{gmttime}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from holiday where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from holiday where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

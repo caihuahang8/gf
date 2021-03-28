@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.learn.dao.ZuoyeDao">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.learn.entity.ZuoyeEntity" id="zuoyeMap">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="content" column="content"/>
+        <result property="url" column="url"/>
+        <result property="end" column="end"/>
+        <result property="remark" column="remark"/>
+        <result property="gmttime" column="gmtTime"/>
+    </resultMap>
+
+    <select id="queryObject" resultType="com.learn.entity.ZuoyeEntity">
+		select * from zuoye where id = #{value}
+	</select>
+
+    <select id="queryList" resultType="com.learn.entity.ZuoyeEntity">
+        select * from zuoye where 1=1
+        <if test="name != null and name != ''">
+            and name like '%${name}%'
+        </if>
+
+
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="queryTotal" resultType="int">
+        select count(*) from zuoye where 1=1
+        <if test="name != null and name != ''">
+            and name like '%${name}%'
+        </if>
+    </select>
+
+    <insert id="save" parameterType="com.learn.entity.ZuoyeEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into zuoye
+		(
+			`name`, 
+			`content`, 
+			`url`, 
+			`end`, 
+			`remark`, 
+			`gmtTime`
+		)
+		values
+		(
+			#{name}, 
+			#{content}, 
+			#{url}, 
+			#{end}, 
+			#{remark}, 
+			#{gmttime}
+		)
+	</insert>
+
+    <update id="update" parameterType="com.learn.entity.ZuoyeEntity">
+        update zuoye
+        <set>
+            <if test="name != null">`name` = #{name},</if>
+            <if test="content != null">`content` = #{content},</if>
+            <if test="url != null">`url` = #{url},</if>
+            <if test="end != null">`end` = #{end},</if>
+            <if test="remark != null">`remark` = #{remark},</if>
+            <if test="gmttime != null">`gmtTime` = #{gmttime}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+		delete from zuoye where id = #{value}
+	</delete>
+
+    <delete id="deleteBatch">
+        delete from zuoye where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>
